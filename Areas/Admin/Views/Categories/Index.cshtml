@@ -1,0 +1,56 @@
+﻿@model IEnumerable<_25DH110581_Hà_Tấn_Trạng_MyStore.Models.Category>
+
+@{
+    ViewBag.Title = "Danh mục sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">Quản lý danh mục sản phẩm</h3>
+    </div>
+    <div class="panel-body">
+        @using (Html.BeginForm("Index", "Categories", FormMethod.Get, new { @class = "form-inline", style = "margin-bottom:15px;" }))
+        {
+            <div class="form-group">
+                <input type="text" name="searchTerm" value="@ViewBag.SearchTerm" class="form-control" placeholder="Tìm tên danh mục..." />
+            </div>
+            <input type="submit" value="Tìm kiếm" class="btn btn-primary" />
+            @Html.ActionLink("Đặt lại", "Index", null, new { @class = "btn btn-default" })
+        }
+
+        <p>
+            @Html.ActionLink("Thêm mới", "Create", null, new { @class = "btn btn-primary" })
+        </p>
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-warning">Không tìm thấy danh mục nào phù hợp.</div>
+        }
+
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr style="background-color:#337ab7; color:#fff;">
+                    <th>Tên danh mục</th>
+                    <th style="width:140px;">Số hàng hóa</th>
+                    <th style="width:260px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CategoryName)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Sửa", "Edit", new { id = item.CategoryID }, new { @class = "btn btn-warning btn-sm" })
+                            @Html.ActionLink("Chi tiết", "Details", new { id = item.CategoryID }, new { @class = "btn btn-info btn-sm" })
+                            @Html.ActionLink("Xóa", "Delete", new { id = item.CategoryID }, new { @class = "btn btn-danger btn-sm" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,105 @@
+﻿@model _25DH110581_Hà_Tấn_Trạng_MyStore.Models.ViewModel.OrderDetailsVM
+
+@{
+    ViewBag.Title = "Chi tiết đơn hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">CHI TIẾT ĐƠN HÀNG #@Model.Order.OrderID</h3>
+    </div>
+    <div class="panel-body">
+        @if (TempData["OrderStatusMessage"] != null)
+        {
+            <div class="alert alert-success">@TempData["OrderStatusMessage"]</div>
+        }
+        @if (TempData["OrderStatusError"] != null)
+        {
+            <div class="alert alert-danger">@TempData["OrderStatusError"]</div>
+        }
+        <dl class="dl-horizontal">
+            <dt>Khách hàng</dt>
+            <dd>
+                @if (Model.Customer != null)
+                {
+                    @Html.ActionLink(Model.Customer.CustomerName, "Details", new { id = Model.Customer.CustomerID })
+                }
+            </dd>
+
+            <dt>Ngày đặt</dt>
+            <dd>@string.Format("{0:dd/MM/yyyy}", Model.Order.OrderDate)</dd>
+
+            <dt>Thanh toán</dt>
+            <dd>@Model.Order.PaymentStatus (@Model.Order.PaymentMethod)</dd>
+
+            <dt>Giao hàng</dt>
+            <dd>@Model.Order.DeliveryMethod</dd>
+
+            <dt>Địa chỉ giao hàng</dt>
+            <dd>@Model.Order.ShippingAddress</dd>
+
+            <dt>Trạng thái đơn</dt>
+            <dd>
+                @using (Html.BeginForm("UpdateOrderStatus", "Customers", FormMethod.Post, new { @class = "form-inline" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Order.OrderID" />
+                    <select name="status" class="form-control" style="width:auto; display:inline-block;">
+                        @foreach (var s in _25DH110581_Hà_Tấn_Trạng_MyStore.Models.OrderStatuses.All)
+                        {
+                            <option value="@s" @(s == Model.Order.OrderStatus ? "selected" : "")>@s</option>
+                        }
+                    </select>
+                    <button type="submit" class="btn btn-primary btn-sm">Cập nhật</button>
+                }
+            </dd>
+
+            <dt>Tổng tiền</dt>
+            <dd><strong>@string.Format("{0:N0} đ", Model.Order.TotalAmount)</strong></dd>
+        </dl>
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">SẢN PHẨM TRONG ĐƠN HÀNG</h3>
+    </div>
+    <div class="panel-body">
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr style="background-color:#337ab7; color:#fff;">
+                    <th>Hình ảnh</th>
+                    <th>Sản phẩm</th>
+                    <th>Đơn giá</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>
+                            @if (item.Product != null)
+                            {
+                                <img src="@Url.Content(string.IsNullOrEmpty(item.Product.ProductImage) ? "~/Content/images/default_img.png" : item.Product.ProductImage)"
+                                     alt="Ảnh sản phẩm" style="height:50px;" class="img-thumbnail" />
+                            }
+                        </td>
+                        <td>@(item.Product != null ? item.Product.ProductName : "(sản phẩm đã bị xóa)")</td>
+                        <td>@string.Format("{0:N0} đ", item.UnitPrice)</td>
+                        <td>@item.Quantity</td>
+                        <td>@string.Format("{0:N0} đ", item.Quantity * item.UnitPrice)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (Model.Customer != null)
+        {
+            @Html.ActionLink("Quay lại đơn hàng của khách", "Details", new { id = Model.Customer.CustomerID }, new { @class = "btn btn-default" })
+        }
+        @Html.ActionLink("Danh sách khách hàng", "Index", null, new { @class = "btn btn-default" })
+    </div>
+</div>

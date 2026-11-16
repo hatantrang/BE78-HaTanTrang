@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Quản trị website</title>
+    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" type="text/css" href="~/Content/mystyle/AdminCompat.css" />
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark admin-nav">
+        <div class="container">
+            @Html.ActionLink("MyStore Admin", "Index", "Home", new { area = "Admin" }, new { @class = "navbar-brand" })
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#adminNav" title="Toggle navigation"
+                    aria-controls="adminNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="adminNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">@Html.ActionLink("Trang chủ", "Index", "Home", new { area = "Admin" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Quản lý danh mục</a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Danh mục sản phẩm", "Index", "Categories", new { area = "Admin" }, new { @class = "dropdown-item" })</li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Quản lý hàng hóa</a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Sản phẩm", "Index", "Products", new { area = "Admin" }, new { @class = "dropdown-item" })</li>
+                            <li>@Html.ActionLink("Kho hàng", "Inventory", "Products", new { area = "Admin" }, new { @class = "dropdown-item" })</li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">@Html.ActionLink("Khách hàng", "Index", "Customers", new { area = "Admin" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Đơn hàng", "Index", "Orders", new { area = "Admin" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Tài khoản", "Index", "Accounts", new { area = "Admin" }, new { @class = "nav-link" })</li>
+                    <li class="nav-item">@Html.ActionLink("Xem website", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                </ul>
+                @if (Session["AdminUser"] != null)
+                {
+                    <span class="navbar-text me-3">Xin chào, @Session["AdminUser"]</span>
+                    @Html.ActionLink("Đăng xuất", "Logout", "Auth", new { area = "Admin" }, new { @class = "btn btn-outline-light btn-sm" })
+                }
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content mt-3">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - MyStore (BE05-06)</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

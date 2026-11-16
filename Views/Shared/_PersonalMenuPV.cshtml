@@ -1,0 +1,40 @@
+﻿@model _25DH110581_Hà_Tấn_Trạng_MyStore.Models.ViewModel.PersonalMenuVM
+
+<ul class="personal-menu">
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Index", "Home", new { area = "" })">Trang chủ</a>
+    </li>
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @if (Model.IsLoggedIn)
+            {
+                <text>Hello, @Model.Username</text>
+            }
+            else
+            {
+                <text>Tài khoản</text>
+            }
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end">
+            @if (Model.IsLoggedIn)
+            {
+                <li><a class="dropdown-item" href="@Url.Action("ProfileInfo", "Account", new { area = "" })">Thông tin tài khoản</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("MyOrder", "Order", new { area = "" })">Lịch sử mua hàng</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li><a class="dropdown-item" href="@Url.Action("Logout", "Account", new { area = "" })">Đăng xuất</a></li>
+            }
+            else
+            {
+                <li><a class="dropdown-item" href="@Url.Action("Register", "Account", new { area = "" })">Đăng ký</a></li>
+                <li><a class="dropdown-item" href="@Url.Action("Login", "Account", new { area = "" })">Đăng nhập</a></li>
+            }
+        </ul>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="@Url.Action("Index", "Cart", new { area = "" })">
+            Giỏ hàng <span class="cart-badge">@Model.CartCount</span>
+        </a>
+    </li>
+</ul>

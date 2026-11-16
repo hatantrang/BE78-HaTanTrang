@@ -1,0 +1,74 @@
+﻿@model _25DH110581_Hà_Tấn_Trạng_MyStore.Models.ViewModel.ProductDetailsVM
+
+@{
+    ViewBag.Title = "ProductDetails";
+}
+
+<link rel="stylesheet" type="text/css" href="~/Content/myStyle/CustomerDetailProduct.css" />
+
+<div class="container-fluid pro">
+    <div class="row">
+        <div class="col-md-3 pro-section">
+            <img src="@Url.Content(string.IsNullOrEmpty(Model.product.ProductImage) ? "~/Content/images/default_img.png" : Model.product.ProductImage)" />
+        </div>
+        <div class="col-md-5 pro-section">
+            <div>
+                <h4><strong>@Html.DisplayFor(model => model.product.ProductName)</strong></h4>
+                <p class="pro-sale">Đã bán:&nbsp; @Model.product.OrderDetails.Count</p>
+                <p class="pro-price">@Model.product.ProductPrice.ToString("C")</p>
+                <p>Tủ sách:&nbsp;@Model.product.Category.CategoryName</p>
+                @if (Model.product.ProductStock <= 0)
+                {
+                    <p><span class="badge bg-secondary">Hết hàng</span></p>
+                }
+                else if (Model.product.ProductStock <= 5)
+                {
+                    <p class="text-danger">Chỉ còn @Model.product.ProductStock sản phẩm</p>
+                }
+                else
+                {
+                    <p class="text-success">Còn hàng (@Model.product.ProductStock)</p>
+                }
+                <hr />
+                <h5><strong>Mô tả</strong></h5>
+                <p> @Model.product.ProductDescription </p>
+            </div>
+            <hr />
+
+            <div>@Html.Partial("_PVRelatedProduct", Model)</div>
+        </div>
+        <div class="col-md-3 pro-section">
+            <div class="form-group">
+                @using (Html.BeginForm("ProductDetails", "Home", FormMethod.Get))
+                {
+                    <input type="hidden" name="id" value="@Model.product.ProductID" />
+
+                    <h4><strong>Số lượng</strong> </h4>
+                    <p>
+                        @Html.TextBoxFor(model => model.quantity, new
+                        { @class = "form-control", @type = "number", @min = 1, @max = Math.Max(1, Model.product.ProductStock) })
+                    </p>
+
+                    <h4><strong>Tạm tính</strong> </h4>
+                    <p>@Model.estimatedValue.ToString("N0")</p>
+
+                    <p>
+                        <button type="submit" class="btn btn-secondary">Cập nhật</button>
+                        @if (Model.product.ProductStock > 0)
+                        {
+                            @Html.ActionLink("Thêm vào giỏ hàng", "AddToCart", "Cart",
+                                new { id = Model.product.ProductID, quantity = Model.quantity },
+                                new { @class = "btn btn-info" })
+                        }
+                        else
+                        {
+                            <button type="button" class="btn btn-secondary" disabled>Hết hàng</button>
+                        }
+                    </p>
+                }
+                <hr />
+            </div>
+            <div>@Html.Partial("_PVTopProduct", Model)</div>
+        </div>
+    </div>
+</div>

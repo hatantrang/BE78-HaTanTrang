@@ -1,0 +1,14 @@
+﻿
+@using _25DH110581_Hà_Tấn_Trạng_MyStore.Models
+@{
+    ViewBag.Title = "Quản lý kho hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="panel panel-success">
+    <div class="panel-heading"><h3 class="panel-title">Danh sách hàng tồn</h3></div>
+    <div class="panel-body">@Html.Partial("PVInventoryTable", (IEnumerable<Product>)ViewBag.InStock)</div>
+</div>
+<div class="panel panel-danger">
+    <div class="panel-heading"><h3 class="panel-title">Danh sách hàng cần nhập</h3></div>
+    <div class="panel-body">@Html.Partial("PVInventoryTable", (IEnumerable<Product>)ViewBag.NeedRestock)</div>
+</div>

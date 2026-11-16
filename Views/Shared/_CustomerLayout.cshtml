@@ -1,0 +1,66 @@
+﻿@{
+    var cart = Session["Cart"] as _25DH110581_Hà_Tấn_Trạng_MyStore.Models.ViewModel.Cart;
+
+    var pmmodel = new _25DH110581_Hà_Tấn_Trạng_MyStore.Models.ViewModel.PersonalMenuVM
+    {
+        IsLoggedIn = User.Identity.IsAuthenticated,
+        Username = User.Identity.IsAuthenticated ? User.Identity.Name : string.Empty,
+        CartCount = cart != null ? cart.Count : 0
+    };
+    ViewBag.pmmodel = pmmodel;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - MyStore</title>
+    @Styles.Render("~/Content/css")
+    <link rel="stylesheet" type="text/css" href="~/Content/mystyle/CustomerLayout.css" />
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="promo-bar">Free ship đơn từ 40k, giảm nhiều hơn cùng <strong>FREESHIP</strong></div>
+
+    <header class="store-header">
+        <div class="container">
+            <nav class="navbar navbar-expand-md px-0">
+                <a class="brand" href="@Url.Action("Index", "Home", new { area = "" })">Thiên Đường <span>Nước Ngọt</span></a>
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#storeNav"
+                        aria-controls="storeNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end" id="storeNav">
+                    @Html.Partial("_PersonalMenuPV", pmmodel)
+                </div>
+
+            </nav>
+        </div>
+    </header>
+
+    <div class="category-bar">
+        <div class="container">
+            @Html.Action("CategoryMenu", "Home", new { area = "" })
+        </div>
+    </div>
+
+    <div class="container body-content store-body">
+        @RenderBody()
+    </div>
+
+    <footer class="store-footer">
+        <div class="container d-flex justify-content-between flex-wrap">
+            <span>&copy; @DateTime.Now.Year Shop Nước Ngọt Giải Khát - TG.Hà Tấn Trạng</span>
+            <span>
+                <a href="@Url.Action("Contact", "Home", new { area = "" })">Contact</a>
+                &nbsp;|&nbsp;
+                <a href="@Url.Action("Login", "Auth", new { area = "Admin" })">Quản trị</a>
+            </span>
+        </div>
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

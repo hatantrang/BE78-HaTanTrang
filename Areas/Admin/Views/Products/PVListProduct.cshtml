@@ -1,0 +1,74 @@
+﻿@model _25DH110581_Hà_Tấn_Trạng_MyStore.Models.ViewModel.ProductSearchVM
+@using PagedList
+@using PagedList.Mvc
+
+@if (Model.Products.Count == 0)
+{
+    <div class="alert alert-warning">Không tìm thấy sản phẩm nào phù hợp.</div>
+}
+else
+{
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr style="background-color:#337ab7; color:#fff;">
+                <th>Hình ảnh</th>
+                <th>Tên sản phẩm</th>
+                <th>Danh mục</th>
+                <th>Giá</th>
+                <th>Tồn kho</th>
+                <th style="width:260px;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Products)
+            {
+                <tr>
+                    <td>
+                        <img src="@Url.Content(string.IsNullOrEmpty(item.ProductImage) ? "~/Content/images/default_img.png" : item.ProductImage)"
+                             alt="Ảnh sản phẩm" style="height:60px;" class="img-thumbnail" />
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.ProductName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Category.CategoryName)</td>
+                    <td>@item.ProductPrice.ToString("N0") đ</td>
+                    <td>
+                        @if (item.ProductStock == 0)
+                        {
+                            <span class="label label-danger badge bg-danger">Hết hàng</span>
+                        }
+                        else if (item.ProductStock <= _25DH110581_Hà_Tấn_Trạng_MyStore.Models.ViewModel.ProductSearchVM.LowStockLevel)
+                        {
+                            <span class="label label-warning badge bg-warning text-dark">Sắp hết: @item.ProductStock</span>
+                        }
+                        else
+                        {
+                            @item.ProductStock
+                        }
+                    </td>
+                    <td>
+                        @Html.ActionLink("Sửa", "Edit", new { id = item.ProductID }, new { @class = "btn btn-warning btn-sm" })
+                        @Html.ActionLink("Chi tiết", "Details", new { id = item.ProductID }, new { @class = "btn btn-info btn-sm" })
+                        @Html.ActionLink("Xóa", "Delete", new { id = item.ProductID }, new { @class = "btn btn-danger btn-sm" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        Trang @(Model.Products.PageCount < Model.Products.PageNumber ? 0 : Model.Products.PageNumber) / @Model.Products.PageCount
+        (tổng cộng @Model.Products.TotalItemCount sản phẩm)
+    </div>
+
+    @Html.PagedListPager(Model.Products,
+        page => Url.Action("Index", new
+        {
+            page = page,
+            searchTerm = Model.SearchTerm,
+            minPrice = Model.MinPrice,
+            maxPrice = Model.MaxPrice,
+            categoryId = Model.CategoryID,
+            stockFilter = Model.StockFilter,
+            sortOrder = Model.SortOrder
+        }),
+        PagedListRenderOptions.ClassicPlusFirstAndLast)
+}

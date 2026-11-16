@@ -1,0 +1,74 @@
+﻿@model _25DH110581_Hà_Tấn_Trạng_MyStore.Models.ViewModel.MyOrderVM
+@{
+    ViewBag.Title = "Đơn hàng của tôi";
+}
+
+<h2 class="mb-3">Đơn hàng của tôi</h2>
+
+@if (TempData["OrderMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["OrderMessage"]</div>
+}
+@if (TempData["OrderError"] != null)
+{
+    <div class="alert alert-danger">@TempData["OrderError"]</div>
+}
+
+
+@using (Html.BeginForm("MyOrder", "Order", FormMethod.Get, new { @class = "row g-2 mb-3" }))
+{
+    <input type="hidden" name="tab" value="@Model.Tab" />
+    <div class="col-md-9">
+        <input type="text" name="searchTerm" value="@Model.SearchTerm" class="form-control"
+               placeholder="Tìm theo mã đơn hàng hoặc tên sản phẩm" />
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-secondary w-100">Tìm đơn hàng</button>
+    </div>
+}
+
+
+<ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+        <a class="nav-link @(Model.Tab == null ? "active" : "")"
+           href="@Url.Action("MyOrder", new { searchTerm = Model.SearchTerm })">
+            Tất cả đơn <span class="badge bg-secondary">@Model.TotalCount</span>
+        </a>
+    </li>
+    @foreach (var status in _25DH110581_Hà_Tấn_Trạng_MyStore.Models.OrderStatuses.All)
+    {
+        <li class="nav-item">
+            <a class="nav-link @(Model.Tab == status ? "active" : "")"
+               href="@Url.Action("MyOrder", new { tab = status, searchTerm = Model.SearchTerm })">
+                @status <span class="badge bg-secondary">@Model.StatusCounts[status]</span>
+            </a>
+        </li>
+    }
+</ul>
+
+@if (Model.Orders.Count == 0)
+{
+    <div class="alert alert-info">Không có đơn hàng nào.</div>
+}
+else if (Model.Tab == null)
+{
+    
+    foreach (var status in _25DH110581_Hà_Tấn_Trạng_MyStore.Models.OrderStatuses.All)
+    {
+        var inStatus = Model.Orders.Where(o => o.OrderStatus == status).ToList();
+        if (inStatus.Count == 0) { continue; }
+
+        <h5 class="mt-4 mb-2">@status (@inStatus.Count)</h5>
+        foreach (var order in inStatus)
+        {
+            @Html.Partial("_PVOrderCard", order)
+        }
+    }
+}
+else
+{
+    foreach (var order in Model.Orders)
+    {
+        @Html.Partial("_PVOrderCard", order)
+    }
+}

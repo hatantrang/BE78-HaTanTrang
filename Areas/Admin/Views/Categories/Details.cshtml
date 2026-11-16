@@ -1,0 +1,33 @@
+﻿@model _25DH110581_Hà_Tấn_Trạng_MyStore.Models.Category
+
+@{
+    ViewBag.Title = "Chi tiết danh mục";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h3 class="panel-title">Chi tiết danh mục sản phẩm</h3>
+    </div>
+    <div class="panel-body">
+        <dl class="dl-horizontal">
+            <dt>Tên danh mục</dt>
+            <dd>@Html.DisplayFor(model => model.CategoryName)</dd>
+        </dl>
+        <h4>Sản phẩm thuộc danh mục (@Model.Products.Count)</h4>
+        <table class="table table-bordered">
+            <tr><th>Tên</th><th>Giá</th><th>Tồn kho</th></tr>
+            @foreach (var p in Model.Products)
+            {
+                <tr>
+                    <td>@p.ProductName</td>
+                    <td>@p.ProductPrice.ToString("N0") đ</td>
+                    <td>@p.ProductStock</td>
+                </tr>
+            }
+        </table>
+
+        @Html.ActionLink("Sửa", "Edit", new { id = Model.CategoryID }, new { @class = "btn btn-warning" })
+        @Html.ActionLink("Quay lại danh sách", "Index", null, new { @class = "btn btn-default" })
+    </div>
+</div>

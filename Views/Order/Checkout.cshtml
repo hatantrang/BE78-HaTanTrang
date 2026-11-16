@@ -1,0 +1,117 @@
+﻿@model _25DH110581_Hà_Tấn_Trạng_MyStore.Models.ViewModel.CheckoutVM
+@{
+    ViewBag.Title = "Thanh toán";
+}
+
+<h2 class="mb-3">Thanh toán</h2>
+
+@if (TempData["CheckoutError"] != null)
+{
+    <div class="alert alert-danger">@TempData["CheckoutError"]</div>
+}
+
+@using (Html.BeginForm("Checkout", "Order", FormMethod.Post, new { id = "frmCheckout" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+
+            
+            <div class="card mb-3">
+                <div class="card-header fw-bold">Chọn hình thức giao hàng</div>
+                <div class="card-body">
+                    @for (int i = 0; i < _25DH110581_Hà_Tấn_Trạng_MyStore.Models.DeliveryMethods.All.Length; i++)
+                    {
+                        var method = _25DH110581_Hà_Tấn_Trạng_MyStore.Models.DeliveryMethods.All[i];
+                        <div class="form-check mb-2">
+                            @Html.RadioButtonFor(m => m.DeliveryMethod, method, new { @class = "form-check-input", id = "dm" + i })
+                            <label class="form-check-label" for="dm@(i)">@method</label>
+                        </div>
+                    }
+                    @Html.ValidationMessageFor(m => m.DeliveryMethod)
+                </div>
+            </div>
+
+            
+            <div class="card mb-3">
+                <div class="card-header fw-bold">Chọn hình thức thanh toán</div>
+                <div class="card-body">
+                    @for (int i = 0; i < _25DH110581_Hà_Tấn_Trạng_MyStore.Models.PaymentMethods.All.Length; i++)
+                    {
+                        var method = _25DH110581_Hà_Tấn_Trạng_MyStore.Models.PaymentMethods.All[i];
+                        <div class="form-check mb-2">
+                            @Html.RadioButtonFor(m => m.PaymentMethod, method, new { @class = "form-check-input", id = "pm" + i })
+                            <label class="form-check-label" for="pm@(i)">
+                                @method
+                                
+                            </label>
+                        </div>
+                    }
+                    @Html.ValidationMessageFor(m => m.PaymentMethod)
+                </div>
+            </div>
+
+            
+            <div class="card mb-3">
+                <div class="card-header fw-bold">Giao tới</div>
+                <div class="card-body">
+                    <p class="mb-2"><strong>@Model.CustomerName</strong> &nbsp; @Model.CustomerPhone</p>
+
+                    <div class="input-group mb-2">
+                        @Html.TextBoxFor(m => m.ShippingAddress, new { @class = "form-control", @readonly = "readonly" })
+                        <button type="button" class="btn btn-outline-primary" onclick="enableAddressEdit()">Chỉnh sửa</button>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.ShippingAddress)
+
+                    <div id="newAddressBox" style="display:none;" class="mt-2">
+                        <input type="text" id="newShippingAddress" class="form-control" maxlength="500"
+                               placeholder="Nhập địa chỉ nhận hàng mới" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="summary-box">
+                <h5 class="mb-3">Đơn hàng</h5>
+                @foreach (var item in Model.CartItems)
+                {
+                    <div class="d-flex justify-content-between small mb-2">
+                        <span>@item.ProductName <span class="text-muted">x @item.Quantity</span></span>
+                        <span>@string.Format("{0:N0} đ", item.TotalPrice)</span>
+                    </div>
+                }
+                <hr />
+                <div class="d-flex justify-content-between mb-3">
+                    <span class="fw-bold">Tổng tiền</span>
+                    <span class="fw-bold text-danger fs-5">@string.Format("{0:N0} đ", Model.TotalAmount)</span>
+                </div>
+                <button type="submit" class="btn btn-danger w-100 mb-2">Đặt hàng</button>
+                @Html.ActionLink("Quay lại giỏ hàng", "Index", "Cart", null, new { @class = "btn btn-outline-secondary w-100" })
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        function enableAddressEdit() {
+            document.getElementById('newAddressBox').style.display = 'block';
+            document.getElementById('newShippingAddress').focus();
+        }
+
+        function updateShippingAddress() {
+            var box = document.getElementById('newShippingAddress');
+            if (box && box.value.trim() !== '') {
+                var field = document.getElementById('ShippingAddress');
+                field.removeAttribute('readonly');
+                field.value = box.value.trim();
+            }
+        }
+
+        document.getElementById('frmCheckout').addEventListener('submit', updateShippingAddress);
+    </script>
+}

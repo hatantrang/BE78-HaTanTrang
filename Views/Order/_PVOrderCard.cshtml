@@ -1,0 +1,62 @@
+﻿@model _25DH110581_Hà_Tấn_Trạng_MyStore.Models.Order
+@{
+    string badge;
+    switch (Model.OrderStatus)
+    {
+        case _25DH110581_Hà_Tấn_Trạng_MyStore.Models.OrderStatuses.AwaitingPayment: badge = "bg-warning text-dark"; break;
+        case _25DH110581_Hà_Tấn_Trạng_MyStore.Models.OrderStatuses.Processing: badge = "bg-info text-dark"; break;
+        case _25DH110581_Hà_Tấn_Trạng_MyStore.Models.OrderStatuses.Shipping: badge = "bg-primary"; break;
+        case _25DH110581_Hà_Tấn_Trạng_MyStore.Models.OrderStatuses.Delivered: badge = "bg-success"; break;
+        default: badge = "bg-secondary"; break;
+    }
+    bool canCancel = Model.OrderStatus == _25DH110581_Hà_Tấn_Trạng_MyStore.Models.OrderStatuses.AwaitingPayment
+                  || Model.OrderStatus == _25DH110581_Hà_Tấn_Trạng_MyStore.Models.OrderStatuses.Processing;
+}
+
+<div class="order-card">
+    <div class="order-head d-flex justify-content-between flex-wrap">
+        <span><strong>Đơn hàng #@Model.OrderID</strong> &nbsp; <small class="text-muted">@Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</small></span>
+        <span class="badge @badge">@Model.OrderStatus</span>
+    </div>
+
+    <div class="p-3">
+        @foreach (var d in Model.OrderDetails)
+        {
+            <div class="d-flex align-items-center mb-2">
+                <img class="thumb-sm me-3"
+                     src="@Url.Content(d.Product == null || string.IsNullOrEmpty(d.Product.ProductImage) ? "~/Content/images/default_img.png" : d.Product.ProductImage)" alt="" />
+                <div class="flex-grow-1">
+                    @(d.Product != null ? d.Product.ProductName : "(sản phẩm đã bị xóa)")
+                    <div class="small text-muted">x @d.Quantity</div>
+                </div>
+                <div>@string.Format("{0:N0} đ", d.TotalPrice ?? d.Quantity * d.UnitPrice)</div>
+            </div>
+        }
+    </div>
+
+    <div class="order-foot d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <div class="small text-muted">@Model.PaymentMethod - @Model.PaymentStatus</div>
+            <div>Tổng tiền: <strong class="text-danger">@string.Format("{0:N0} đ", Model.TotalAmount)</strong></div>
+        </div>
+        <div class="d-flex gap-2">
+            @Html.ActionLink("Xem chi tiết", "OrderSuccess", "Order", new { id = Model.OrderID }, new { @class = "btn btn-sm btn-outline-primary" })
+
+            @using (Html.BeginForm("Reorder", "Order", new { id = Model.OrderID }, FormMethod.Post, new { }))
+            {
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-sm btn-primary">Mua lại</button>
+            }
+
+            @if (canCancel)
+            {
+                using (Html.BeginForm("CancelOrder", "Order", new { id = Model.OrderID }, FormMethod.Post, new { }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Hủy đơn hàng này?');">Hủy đơn</button>
+                }
+            }
+        </div>
+    </div>
+</div>

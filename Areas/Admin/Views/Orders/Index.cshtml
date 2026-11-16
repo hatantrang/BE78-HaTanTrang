@@ -1,0 +1,36 @@
+﻿
+@model IEnumerable<_25DH110581_Hà_Tấn_Trạng_MyStore.Models.Order>
+@{
+    ViewBag.Title = "Quản lý đơn hàng";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="panel panel-primary">
+    <div class="panel-heading"><h3 class="panel-title">Quản lý đơn hàng</h3></div>
+    <div class="panel-body">
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr style="background-color:#337ab7; color:#fff;">
+                    <th>Mã</th>
+                    <th>Khách hàng</th>
+                    <th>Ngày đặt</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td>@o.OrderID</td>
+                        <td>@o.Customer.CustomerName</td>
+                        <td>@o.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@o.TotalAmount.ToString("N0") đ</td>
+                        <td>@o.OrderStatus</td>
+                        <td>@Html.ActionLink("Chi tiết", "OrderDetails", "Customers", new { area = "Admin", id = o.OrderID }, new { @class = "btn btn-info btn-sm" })</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

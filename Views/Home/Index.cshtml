@@ -1,0 +1,33 @@
+﻿@model _25DH110581_Hà_Tấn_Trạng_MyStore.Models.ViewModel.HomeProductVM
+@{
+    ViewBag.Title = "Customer Home Page";
+}
+
+<link rel="stylesheet" type="text/css" href="~/Content/myStyle/CustomerHome.css" />
+
+<section class="container-fluid banner">
+    <div class="banner-container">
+
+    </div>
+</section>
+
+<section class="container-fluid searchProd">
+    <h2>Tìm kiếm sản phẩm</h2>
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get))
+    {
+        <div class="form-group search-container">
+            @Html.TextBoxFor(m => m.SearchTerm, new
+            {
+                @class = "search-input",
+                placeholder = "Nhập tên, mô tả hoặc chủng loại sản phẩm"
+            })
+
+            <button type="submit" class="search-button">Tìm kiếm</button>
+        </div>
+    }
+</section>
+<hr />
+
+@Html.Partial("_PVFeatureProduct", Model)
+
+@Html.Partial("_PVNewProduct", Model)

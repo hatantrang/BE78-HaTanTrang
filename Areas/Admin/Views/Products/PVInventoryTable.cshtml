@@ -1,0 +1,27 @@
+﻿@model IEnumerable<_25DH110581_Hà_Tấn_Trạng_MyStore.Models.Product>
+@{ var sold = ViewBag.Sold as Dictionary<int, int> ?? new Dictionary<int, int>(); }
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr style="background-color:#337ab7; color:#fff;">
+            <th>Tên</th>
+            <th>Danh mục</th>
+            <th>Giá</th>
+            <th>Tồn kho</th>
+            <th>Đã bán</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.ProductName</td>
+                <td>@p.Category.CategoryName</td>
+                <td>@p.ProductPrice.ToString("N0") đ</td>
+                <td>@p.ProductStock</td>
+                <td>@(sold.ContainsKey(p.ProductID) ? sold[p.ProductID] : 0)</td>
+                <td>@Html.ActionLink("Nhập hàng", "Edit", new { id = p.ProductID }, new { @class = "btn btn-warning btn-sm" })</td>
+            </tr>
+        }
+    </tbody>
+</table>

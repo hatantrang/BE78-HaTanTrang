@@ -1,0 +1,87 @@
+﻿@model _25DH110581_Hà_Tấn_Trạng_MyStore.Models.ViewModel.ProductListVM
+@using PagedList.Mvc
+@{
+    ViewBag.Title = Model.CategoryName;
+}
+
+<link rel="stylesheet" type="text/css" href="~/Content/myStyle/CustomerHome.css" />
+
+<h2 class="mb-3" style="color:brown;">@Model.CategoryName</h2>
+
+@using (Html.BeginForm("ProductList", "Home", FormMethod.Get, new { @class = "row g-2 mb-3" }))
+{
+    <input type="hidden" name="id" value="@Model.CategoryID" />
+    <div class="col-md-4">
+        <input type="text" name="searchTerm" value="@Model.SearchTerm" class="form-control" placeholder="Tìm trong danh mục này..." />
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="minPrice" value="@Model.MinPrice" min="0" class="form-control" placeholder="Giá từ" />
+    </div>
+    <div class="col-md-2">
+        <input type="number" name="maxPrice" value="@Model.MaxPrice" min="0" class="form-control" placeholder="Giá đến" />
+    </div>
+    <div class="col-md-2">
+        <select name="sortOrder" class="form-select">
+            <option value="" @(string.IsNullOrEmpty(Model.SortOrder) ? "selected" : "")>Sắp xếp mặc định</option>
+            <option value="bestseller" @(Model.SortOrder == "bestseller" ? "selected" : "")>Bán chạy nhất</option>
+            <option value="name_asc" @(Model.SortOrder == "name_asc" ? "selected" : "")>Tên A → Z</option>
+            <option value="name_desc" @(Model.SortOrder == "name_desc" ? "selected" : "")>Tên Z → A</option>
+            <option value="price_asc" @(Model.SortOrder == "price_asc" ? "selected" : "")>Giá tăng dần</option>
+            <option value="price_desc" @(Model.SortOrder == "price_desc" ? "selected" : "")>Giá giảm dần</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-secondary w-100">Lọc</button>
+    </div>
+    <div class="col-12">
+        <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="inStockOnly" name="inStockOnly" value="true" @(Model.InStockOnly ? "checked" : "") />
+            <label class="form-check-label" for="inStockOnly">Chỉ hiện sản phẩm còn hàng</label>
+            &nbsp; <a href="@Url.Action("ProductList", new { id = Model.CategoryID })">Xóa bộ lọc</a>
+        </div>
+    </div>
+}
+
+@if (Model.Products != null && Model.Products.Any())
+{
+    <div class="row row-cols-2 row-cols-md-4 g-3">
+        @foreach (var product in Model.Products)
+        {
+            <div class="col">
+                <div class="product-card text-center">
+                    <a href="@Url.Action("ProductDetails", "Home", new { id = product.ProductID })">
+                        <img src="@Url.Content(string.IsNullOrEmpty(product.ProductImage) ? "~/Content/images/default_img.png" : product.ProductImage)" alt="@product.ProductName" />
+                    </a>
+                    <p class="prodName mt-2 mb-1">@product.ProductName</p>
+                    <p class="prodPrice mb-1">@string.Format("{0:N0} đ", product.ProductPrice)</p>
+                    <p class="prodSale mb-2">Đã bán: @product.OrderDetails.Count</p>
+                    @if (product.ProductStock > 0)
+                    {
+                        <a class="btn btn-sm btn-info text-white" href="@Url.Action("AddToCart", "Cart", new { id = product.ProductID, quantity = 1 })">Thêm vào giỏ</a>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Hết hàng</span>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="pagination-container mt-3">
+        @Html.PagedListPager(Model.Products, page => Url.Action("ProductList", new
+        {
+            id = Model.CategoryID,
+            searchTerm = Model.SearchTerm,
+            sortOrder = Model.SortOrder,
+            minPrice = Model.MinPrice,
+            maxPrice = Model.MaxPrice,
+            inStockOnly = Model.InStockOnly ? "true" : null,
+            page
+        }))
+    </div>
+}
+else
+{
+    <div class="alert alert-info">Không tìm thấy sản phẩm nào trong danh mục này.</div>
+}
