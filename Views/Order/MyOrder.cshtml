@@ -3,7 +3,7 @@
     ViewBag.Title = "Đơn hàng của tôi";
 }
 
-<h2 class="mb-3">Đơn hàng của tôi</h2>
+<h2 class="mb-3">Quản lí đơn hàng</h2>
 
 @if (TempData["OrderMessage"] != null)
 {
@@ -45,7 +45,7 @@
         </li>
     }
 </ul>
-
+<h2>Danh Sách Đơn Hàng</h2>
 @if (Model.Orders.Count == 0)
 {
     <div class="alert alert-info">Không có đơn hàng nào.</div>
@@ -72,3 +72,4 @@ else
         @Html.Partial("_PVOrderCard", order)
     }
 }
+

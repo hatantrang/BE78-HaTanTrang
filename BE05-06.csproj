@@ -128,6 +128,7 @@
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductsController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminOderController.cs" />
     <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
@@ -336,14 +337,15 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Scripts\jquery-3.7.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.0.min.map" />
-    <Content Include="Views\Home\trangchu2.cshtml" />
     <Content Include="Views\Home\_PVFeatureProduct.cshtml" />
     <Content Include="Views\Home\ProductDetails.cshtml" />
     <Content Include="Views\Home\_PVNewProduct.cshtml" />
     <Content Include="Views\Home\_PVRelatedProduct.cshtml" />
     <Content Include="Views\Home\_PVTopProduct.cshtml" />
+    <Content Include="Views\AdminOrder\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Views\AdminOder\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

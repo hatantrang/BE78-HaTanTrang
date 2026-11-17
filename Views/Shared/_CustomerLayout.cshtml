@@ -41,6 +41,11 @@
     <div class="category-bar">
         <div class="container">
             @Html.Action("CategoryMenu", "Home", new { area = "" })
+            <div>
+                <a href="@Url.Action("MyOrder", "Order", new { area = "" })" class="btn btn-sm btn-outline-danger fw-bold">
+                    <i class="fa fa-history"></i> Quản lí đơn hàng
+                </a>
+            </div>
         </div>
     </div>
 

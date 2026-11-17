@@ -1,0 +1,86 @@
+﻿@model IEnumerable<_25DH110581_Hà_Tấn_Trạng_MyStore.Models.Order>
+
+@{
+    ViewBag.Title = "Quản lý Đơn hàng";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml"; /* Hoặc _LayoutAdmin tùy dự án */
+}
+
+<div class="container-fluid" style="background-color: #f4f6f9; padding: 20px;">
+    <h2 style="font-weight: bold; color: #333;">Phần Admin: Quản lý Đơn hàng</h2>
+    <h4 style="color: #666; margin-bottom: 20px;">Trang Danh sách đơn hàng</h4>
+
+    <!-- THANH TÌM KIẾM VÀ LỌC (Khớp slide) -->
+    <div class="card p-3 mb-4 shadow-sm" style="background: white; border-radius: 5px;">
+        @using (Html.BeginForm("Index", "AdminOrder", FormMethod.Get))
+        {
+            <div class="row">
+                <div class="col-md-4">
+                    <label><strong>Tên khách hàng</strong></label>
+                    <input type="text" name="searchName" class="form-control" placeholder="Nhập tên khách hàng..." value="@Request.QueryString["searchName"]" />
+                </div>
+                <div class="col-md-3">
+                    <label><strong>Trạng thái thanh toán</strong></label>
+                    <select name="paymentStatus" class="form-control">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="Chưa thanh toán" @(Request.QueryString["paymentStatus"] == "Chưa thanh toán" ? "selected" : "")>Chưa thanh toán</option>
+                        <option value="Thanh toán tiền mặt" @(Request.QueryString["paymentStatus"] == "Thanh toán tiền mặt" ? "selected" : "")>Thanh toán tiền mặt</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label><strong>Ngày đặt hàng</strong></label>
+                    <input type="date" name="orderDate" class="form-control" value="@Request.QueryString["orderDate"]" />
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100" style="background-color: #007bff; border: none;">
+                        <i class="fa fa-search"></i> Tìm kiếm
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- BẢNG DANH SÁCH ĐƠN HÀNG -->
+    <div class="card shadow-sm" style="background: white; border-radius: 5px; overflow: hidden;">
+        <div class="card-header" style="background-color: #d4edda; color: #155724; font-weight: bold; font-size: 18px;">
+            DANH SÁCH ĐƠN HÀNG
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0" style="vertical-align: middle;">
+                <thead style="background-color: #e9ecef;">
+                    <tr>
+                        <th>Ngày đặt hàng</th>
+                        <th>Tên khách hàng</th>
+                        <th>Tổng giá trị</th>
+                        <th>Trạng thái thanh toán</th>
+                        <th>Phương thức giao hàng</th>
+                        <th class="text-center">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.OrderDate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                <td>@item.Customer.CustomerName</td>
+                                <td>@item.TotalAmount.ToString("N0") đ</td>
+                                <td>@item.PaymentMethod</td>
+                                <td>@item.DeliveryMethod</td>
+                                <td class="text-center">
+                                    @Html.ActionLink("Chi tiết đơn hàng", "Details", new { id = item.OrderID }, new { @style = "color: #007bff; text-decoration: none; font-weight: 500;" })
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center p-4 text-muted">Không có đơn hàng nào trong hệ thống.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
